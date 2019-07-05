@@ -1,0 +1,40 @@
+version: '3.5'
+services:
+#
+# IREDMAIL
+#
+  iredmail: 
+    image: lejmr/iredmail:mysql-latest
+    restart: unless-stopped
+    container_name: iredmail
+    hostname: mail
+    domainname: example.com
+    environment: 
+      - DOMAIN=example.com
+      - HOSTNAME=mail
+      - MYSQL_ROOT_PASSWORD=password
+      - SOGO_WORKERS=1
+      - TIMEZONE=America/Fortaleza
+      - POSTMASTER_PASSWORD={PLAIN}password
+      - IREDAPD_PLUGINS=['reject_null_sender', 'reject_sender_login_mismatch', 'greylisting', 'throttle', 'amavisd_wblist', 'sql_alias_access_policy']
+    volumes:
+      - iredmail-mysql:/var/lib/mysql 
+      - iredmail-vmail:/var/vmail 
+      - iredmail-clamav:/var/lib/clamav
+    ports: 
+      - 80:80
+      - 443:443
+      - 25:25
+      - 587:587
+      - 110:110
+      - 143:143
+      - 993:993
+      - 995:995
+#
+# VOLUMES
+#
+volumes:
+  iredmail-mysql:
+  iredmail-vmail:
+  iredmail-clamav:
+
